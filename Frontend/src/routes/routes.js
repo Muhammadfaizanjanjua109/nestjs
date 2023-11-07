@@ -17,7 +17,7 @@ const ProtectedRoutes = [
 
   const authRoutes = [
   {
-    path:"Login",component:<Login />,
+    path:"",component:<Login />,
   },
 
   {

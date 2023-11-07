@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 function Login() {
-    const SERVER_DEVELOP=process.env.SERVER_DEVELOP
+    const REACT_APP_BASE_URL=process.env.REACT_APP_BASE_URL
+ 
     const navigate=useNavigate()
     const [form, setForm] = useState({
         username: '',
@@ -20,7 +21,7 @@ function Login() {
 
 
     const handleSignInAPi=()=>{
-        const apiUrl = `http://localhost:3008/auth/login`; 
+        const apiUrl = `${REACT_APP_BASE_URL}auth/login`; 
         axios
           .post(apiUrl, form)
           .then((response) => {
@@ -68,7 +69,7 @@ function Login() {
                                 <span class="txt1">
                                     Don’t have an account?
                                 </span>
-                                <Link class="txt2" to="/auth/Signup">
+                                <Link class="txt2" to="/Signup">
                                     Sign Up
                                 </Link>
                             </div>

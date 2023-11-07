@@ -4,7 +4,7 @@ import ApiCall from '../../components/ApiCall'
 import axios from 'axios'
 
 function SignUp() {
-    const SERVER_DEVELOP=process.env.SERVER_DEVELOP
+    const REACT_APP_BASE_URL=process.env.REACT_APP_BASE_URL
     const navigate=useNavigate()
     const [form, setForm] = useState({
         username: '',
@@ -20,13 +20,13 @@ function SignUp() {
     }
 
 const handleSignUpAPi=()=>{
-const apiUrl = `${SERVER_DEVELOP}/auth/signup`; 
+const apiUrl = `${REACT_APP_BASE_URL}auth/signup`; 
 axios
   .post(apiUrl, form)
   .then((response) => {
      console.log('User created successfully:',
       response.data ) 
-      navigate('/auth/Login')
+      navigate('/')
       ;})
   .catch((error) => {console.error('Error creating user:', error);
   });
@@ -65,7 +65,7 @@ axios
                     Already have an account?
                 </span>
 
-                <Link class="txt2" to="/auth/Signup">
+                <Link class="txt2" to="/">
                     Sign In
                 </Link>
 

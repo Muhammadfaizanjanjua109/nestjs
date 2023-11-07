@@ -21,7 +21,7 @@ function ShowDetails() {
 
 
     const token = window.localStorage.getItem('token');
-    const apiUrl = 'http://localhost:3008/Rating';
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}Rating`;
     
     const customHeaders = {
       'Authorization': `Bearer ${token}`,
@@ -59,7 +59,7 @@ function ShowDetails() {
 
 const GetAllMovies=()=>{
     const token = window.localStorage.getItem("token");
-    const apiUrl = 'http://localhost:3008/Rating'; 
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}Rating`; 
     const customHeaders = {
         'Authorization': `Bearer ${token}`, 
       };

@@ -13,7 +13,7 @@ function Layout() {
   useEffect(() => {
     const auth = window.localStorage.getItem("token");
     if (!auth) {
-      navigate("auth/login");
+      navigate("/login");
     }
   }, []);
  

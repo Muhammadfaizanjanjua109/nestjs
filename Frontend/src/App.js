@@ -18,7 +18,7 @@ function App() {
       draggable
     />
     <Routes>
-      <Route path="/auth" Component={PublicMain}>
+      <Route path="/" Component={PublicMain}>
         {authRoutes.map((index) => (
           <Route path={index.path} element={index.component} />
         ))}

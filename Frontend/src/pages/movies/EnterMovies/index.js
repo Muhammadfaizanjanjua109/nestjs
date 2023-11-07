@@ -20,7 +20,7 @@ function EnterMovies() {
         ))
     }
     const handleSignInAPi = () => {
-        const apiUrl = `http://localhost:3008/movies`;
+        const apiUrl = `${process.env.REACT_APP_BASE_URL}movies`;
         const respo = {
             IDMRating: form?.IDMRating,
             description: form?.description,

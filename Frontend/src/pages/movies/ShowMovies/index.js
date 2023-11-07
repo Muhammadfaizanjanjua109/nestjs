@@ -6,7 +6,7 @@ function ShowMovies() {
     const [moviesList,setMoviesList]=useState([])
 const GetAllMovies=()=>{
     const token = window.localStorage.getItem("token");
-    const apiUrl = 'http://localhost:3008/movies'; 
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}movies` ; 
     const customHeaders = {
         'Authorization': `Bearer ${token}`, 
       };
