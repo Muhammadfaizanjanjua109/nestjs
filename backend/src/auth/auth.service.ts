@@ -4,7 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Auth } from './Schema/auth.schema';
 import mongoose from 'mongoose';
-
+import { MulterFile } from 'src/helper/MulterInterface';
+// import { MulterFile } from 'src/common/types';
 @Injectable()
 export class AuthService {
   constructor(
@@ -36,4 +37,36 @@ if(!user){
   }
 
 
+
+
+  async updateProfile(jwtToken: string, updateData: Partial<Auth>, file: MulterFile) {
+    let b= await  this.jwtService.verify(jwtToken)
+    // console.log(b,'b  b b b b')
+    let userId =b.id
+    // console.log(userId,'body')
+    const user = await this.AuthModal.findById(userId);
+// console.log(user, 'user')
+    if (!user) {
+      throw new UnauthorizedException('Unauthorized', 'User not found');
+    }
+
+    if (file) {
+      user.image = file.buffer;
+    }
+
+    if (updateData.username) {
+      user.username = updateData.username;
+    }
+    if (updateData.dob) {
+      user.dob = updateData.dob;
+    }
+
+    if (updateData.address) {
+      user.address = updateData.address;
+    }
+
+    await user.save();
+
+    return { user, message: 'User profile updated successfully' };
+  }
 }

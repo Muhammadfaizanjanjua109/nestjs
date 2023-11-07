@@ -5,12 +5,18 @@ import { Schema, Prop ,SchemaFactory} from "@nestjs/mongoose";
 })
 export class Auth{
 
-    @Prop() 
+@Prop() 
     id: string
 
  @Prop ()
 username:string
 
+@Prop()
+image: Buffer
+
+  
+@Prop ()
+  dob:string
 
 @Prop ()
 address:string

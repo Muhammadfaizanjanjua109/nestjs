@@ -61,6 +61,45 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "update_profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDY5M2VkZmU1MTM4N2RhOGFkOWNlNyIsInVzZXJuYW1lIjoiRmFpemFuIiwiaWF0IjoxNjk5Mzc3ODAyLCJleHAiOjE2OTkzODE0MDJ9.YExbG8TPNcqJUk-pHpAdLZCb-tsL3OB76Hibor8itLg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dob\":\"12-18-2022\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3008/auth/update_profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3008",
+							"path": [
+								"auth",
+								"update_profile"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
