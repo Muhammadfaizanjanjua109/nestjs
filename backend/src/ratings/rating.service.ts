@@ -8,9 +8,9 @@ import { Movies } from 'src/movies/Schema/movies.schema';
 @Injectable()
 export class RatingsService {
   constructor(
-    @InjectModel('Rating') private readonly ratingModel: Model<Rating>
- ,   private jwtService: JwtService ,
- @InjectModel('Movies') private readonly moviesModel: Model<Movies>
+    @InjectModel('Rating') private readonly ratingModel: Model<Rating>,  
+     private jwtService: JwtService ,
+    @InjectModel('Movies') private readonly moviesModel: Model<Movies>
 
   ) {}
 

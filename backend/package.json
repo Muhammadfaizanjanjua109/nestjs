@@ -27,6 +27,7 @@
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.8",
+    "bcrypt": "^5.1.1",
     "mongoose": "^7.6.4",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",

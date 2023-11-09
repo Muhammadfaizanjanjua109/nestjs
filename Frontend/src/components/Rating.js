@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 // import './RatingComponent.css'; // Import a CSS file for styling
 
-function RatingComponent({ onRatingChange }) {
-  const [rating, setRating] = useState(0);
+function RatingComponent({ onRatingChange ,setRating   ,rating}) {
+
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);

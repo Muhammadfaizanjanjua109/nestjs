@@ -9,9 +9,11 @@ import { MoviesService } from './movies.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MoviesSchema } from './Schema/movies.schema';
 import { JwtStrategy } from 'src/helper/jwt.stretegy';
+import { RatingSchema } from 'src/ratings/Schema/rating.schema';
+import { RatingModule } from 'src/ratings/rating.module';
 
 @Module({
-  imports: [ MongooseModule.forFeature([{ name :'Movies'  , schema : MoviesSchema}]) ],
+  imports: [ MongooseModule.forFeature([{ name :'Movies'  , schema : MoviesSchema} , { name :'Rating'  , schema : RatingSchema}]) , RatingModule ],
   providers: [MoviesService ,JwtStrategy],
   controllers: [MovieController],
   exports: [MoviesService],
