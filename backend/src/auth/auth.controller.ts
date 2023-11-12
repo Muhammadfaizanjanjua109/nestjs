@@ -62,7 +62,7 @@ async signup(@Body() signupDto: any,    @UploadedFile() file: Express.Multer.Fil
     @Body() updateData: Partial<Auth>, // Include other data you want to update
   
   ) {
-    const token = (request.headers as any).authorization; // Your token here
+    const token = (request.headers as any).authorization; //Your token here
 const tokenParts = token.split(" "); // Split the string by space
 const jwtToken = tokenParts[1]; 
    console.log(updateData,'updateData, updateData')
