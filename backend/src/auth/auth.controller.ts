@@ -1,11 +1,13 @@
 
 import { Body, Controller, Post, HttpCode, HttpStatus , Patch, UploadedFile, UseInterceptors ,UseGuards ,Req} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+// import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { Auth } from './Schema/auth.schema';
 import { request } from 'http';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -18,22 +20,31 @@ export class AuthController {
   }
 
 
-  @HttpCode(HttpStatus.OK)
-  @Post('signup')
-  signUp(@Body() signInDto: Record<string, any>) {
-    console.log(signInDto,'signInDto')
-    return this.authService.signup(signInDto);
-  }
 
 
 
-  //   @HttpCode(HttpStatus.OK)
-  
-  // @Patch('update_profile')
-  // @UseInterceptors(FileInterceptor('image'))
-  // update_profile(@Body() signInDto: Record<string, any>) {
-  //   return this.authService.updateProfile(req.user.id, updateData, file);
-  // }
+
+
+
+
+
+
+@HttpCode(HttpStatus.OK)
+@Post('signup')
+@UseInterceptors(FileInterceptor('image' , {storage:diskStorage({
+  destination:'./uploads' ,
+  filename(req, file, callback) {
+    console.log(file,'file from callback')
+    const filename=path.parse(file.originalname).name.replace(/\s/g, '') +Date.now();
+    const extension =path.parse(file.originalname).ext;
+    callback(null,`${filename}${extension}`)
+  },
+})})) // 'image' should match the field name in the FormData
+async signup(@Body() signupDto: any,    @UploadedFile() file: Express.Multer.File): Promise<any> {
+  signupDto.image = file; 
+  return this.authService.signup(signupDto , file);
+}
+
 
 
 

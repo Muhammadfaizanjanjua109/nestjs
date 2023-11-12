@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Req, UseGuards } from "@nestjs/common"
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Put, Req, UseGuards } from "@nestjs/common"
 import { AuthGuard } from "@nestjs/passport";
 import { RateDto } from "./dto/rating.dto";
 import { Rating } from "./Schema/rating.schema";
@@ -8,6 +8,7 @@ import { Request } from "express";
 import { JwtSecretRequestType } from "@nestjs/jwt";
 
 import { JwtService } from '@nestjs/jwt';
+import { Movies } from "src/movies/Schema/movies.schema";
 @Controller()
 export class ratingController{
     constructor(private ratingsService : RatingsService){}
@@ -30,8 +31,6 @@ const jwtToken = tokenParts[1];
     // const rating = await this.ratingsService.updateRating(userId, movieId, rateDto.value); 
     //  return rating;
 }
-
-
 
 
 

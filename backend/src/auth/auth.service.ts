@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException  ,BadRequestException} from '@nestjs/common';
+import { Injectable, UnauthorizedException  ,BadRequestException, ConflictException} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -37,25 +37,50 @@ export class AuthService {
     };
   }
 
-  async signup(signUpDto) {
-    console.log(signUpDto,'signUpDto')
-    if (!signUpDto.username || !signUpDto.password) {
-      throw new BadRequestException('Invalid input', 'Username and password are required');
-    }
 
-    // Hash the password before storing it in the database
+
+
+  async isUsernameTaken(username: string): Promise<boolean> {
+    const existingUser = await this.AuthModal.findOne({ username }).exec();
+    return !!existingUser;
+  }
+
+
+
+
+  async signup(signUpDto ,file) {
+    debugger
+    const isUsernameTaken = await this.isUsernameTaken(signUpDto.username);
+
+    if (isUsernameTaken) {
+      throw new ConflictException('Username already exists');
+    }
+  try {
     const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
 
-    try {
-      const user = await this.AuthModal.create({
-        username: signUpDto.username,
-        password: hashedPassword,
-      });
+    const user = await this.AuthModal.create({
+      username: signUpDto.username,
+      password: hashedPassword,
+      category: signUpDto.category,
+      image: file.path,
+      dob: signUpDto.dob,
+      address: signUpDto.address,
+    });
 
-      return user;
-    } catch (error) {
-      throw new BadRequestException('Invalid input', 'User with the provided username already exists');
+    console.log('User created successfully:', user);
+
+    return user;
+  } catch (error) {
+    if (error.code === 11000 && error.keyPattern.username) {
+      // Duplicate key error for the username field
+      throw new ConflictException('Username already exists');
+    } else {
+      // Other errors
+      console.error('Error creating user:', error);
+      throw new BadRequestException('Invalid input', error.message);
     }
+  }
+
   }
 
 
@@ -71,7 +96,7 @@ export class AuthService {
     }
 
     if (file) {
-      user.image = file.buffer;
+      user.image = updateData.image;
     }
 
     if (updateData.username) {
@@ -85,7 +110,7 @@ export class AuthService {
       user.address = updateData.address;
     }
 
-    await user.save();
+    await user.save(); 
 
     return { user, message: 'User profile updated successfully' };
   }

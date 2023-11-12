@@ -1,20 +1,20 @@
-import { Schema, Prop ,SchemaFactory} from "@nestjs/mongoose";
+// Import necessary modules
+import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from 'mongoose';
+import { Category } from '../../movies/Schema/movies.schema';
 
 @Schema({
     timestamps:true
 })
 export class Auth{
 
-@Prop({ unique: true }) 
-    id: string
 
- @Prop ({ unique: true })
+@Prop ()
 username:string 
 
 @Prop()
-image: Buffer
+image: string; 
 
-  
 @Prop ()
   dob:string
 
@@ -22,9 +22,11 @@ image: Buffer
 address:string
 
 @Prop ()
-password:string
+password:string 
 
+@Prop({ enum: Category }) // Use the Category enum
+category: Category;
 
 }
 
-export const AuthSchema = SchemaFactory.createForClass(Auth)
+export const AuthSchema = SchemaFactory.createForClass(Auth);

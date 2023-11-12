@@ -10,9 +10,10 @@ import { RatingSchema } from './Schema/rating.schema';
 import { RatingsService } from './rating.service';
 import { ratingController } from './rating.controller';
 import { Movies, MoviesSchema } from 'src/movies/Schema/movies.schema';
+import { AuthSchema } from 'src/auth/Schema/auth.schema';
 
 @Module({
-  imports: [ MongooseModule.forFeature([{ name :'Rating'  , schema : RatingSchema} , { name :'Movies'  , schema : MoviesSchema}])  , ],
+  imports: [ MongooseModule.forFeature([{ name :'Rating'  , schema : RatingSchema} , { name :'Movies'  , schema : MoviesSchema } , { name :'Auth'  , schema : AuthSchema}])  , ],
   providers: [RatingsService ,JwtStrategy],
   controllers: [ratingController],
   exports: [RatingsService],

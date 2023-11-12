@@ -19,12 +19,6 @@ export class MoviesService {
 
   async getMovies(jwtToken) {
 
-    // console.log(username,'username')
-    // const user = await this.usersService.findOne(username);
-    // if (user?.password !== pass) {
-    //   throw new UnauthorizedException();
-    // }
-    // const payload = { sub: user.userId, username: user.username };
   const books=await this.MoviesModal.find()
   return books
   }
@@ -36,23 +30,21 @@ export class MoviesService {
     return this.MoviesModal.create(movies)
   }
   async getMoviesById(jwtToken: string, movies_id: string) {
-    // Your authentication logic here
-//  let b= await  this.jwtService.verify(jwtToken)
-//     let userId =b.id
-console.log(movies_id,'movies_id')
-    // Your logic to fetch movie details by ID
-    // For now, let's assume you have a MoviesModel with a findById method
-    // Replace this with your actual model and method
-    const movieDetails = await this.MoviesModal.findById(movies_id);
-console.log(movieDetails,'movieDetails')
-    // Your logic to fetch ratings for the movie
-    const ratings = await this.RatingModal.find({ movie: movies_id });
 
+console.log(movies_id,'movies_id')
+    
+    const movieDetails = await this.MoviesModal.findById(movies_id);
+
+    
+    const ratings = await this.RatingModal.find({ movie: movies_id });
+   
     // Calculate average sdasdrating
     const totalRatings = ratings.length;
-    const sumRatings = ratings.reduce((sum, rating) => sum + rating.value, 0);
-    const averageRating = totalRatings === 0 ? 0 : sumRatings / totalRatings;
 
+    const sumRatings = ratings.reduce((sum, rating) => sum + rating.value, 0);
+   
+    const averageRating = totalRatings === 0 ? 0 : sumRatings / totalRatings;
+  
     return { 
       movieDetails,
       averageRating,

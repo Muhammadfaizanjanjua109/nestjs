@@ -26,11 +26,11 @@ function ShowDetails() {
     const customHeaders = {
       'Authorization': `Bearer ${token}`,
     };
-
+debugger
     // Data to be sent in the PUT request
     const requestData = {
       movie: data?._id,
-      value: rating,
+      value: newRating,
     };
 
     // Make the GET request
@@ -126,7 +126,7 @@ function ShowDetails() {
   return (
     <div className='p-5'>
       <div className='d-flex'>
-        <button className='btn btn-primary me-4' onClick={() => navigate('../../Movies')}>Back</button>
+        <button className='btn btn-primary me-4' onClick={() => navigate('../ShowMovies')}>Back</button>
         <h2>Name: {data.name}</h2>
       </div>
       <hr />
