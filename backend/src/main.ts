@@ -10,8 +10,7 @@ async function bootstrap() {
   
   // Use the express application as middleware in NestJS
   app.use(expressApp);
-   
-
+  
  
   app.enableCors({
     origin:'*'

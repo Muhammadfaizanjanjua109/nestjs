@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 function ShowMovies() {
     const navigate = useNavigate();
     const [moviesList,setMoviesList]=useState([])
+    
 const GetAllMovies=()=>{
     const token = window.localStorage.getItem("token");
     const apiUrl = `${process.env.REACT_APP_BASE_URL}movies` ; 
@@ -43,6 +44,7 @@ useEffect(()=>{
 },[])
   return (
     <div className='p-5 container '>
+      <button className='btn btn-primary' onClick={()=>navigate('/movies')}>Back</button>
         <h1 className='fw-bold text-center text-primary'>All Movies List</h1>
      <div className='row'>
 

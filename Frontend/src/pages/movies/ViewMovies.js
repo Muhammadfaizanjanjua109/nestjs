@@ -1,10 +1,26 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function ViewMovies() {
     const navigate=useNavigate()
   return (
-    <div className='d-flex justify-content-center align-items-center w-100 h-100 flex-column' style={{minHeight:'100vh'}}>
+
+
+<>
+
+
+    <div className='d-flex justify-content-center align-items-center w-100 h-100 flex-column' style={{minHeight:'calc(100vh - 70px)'}}>
+
+
+
+
+
+
+
+
+
+
+
   <>
   <h1 className='fw-bold mb-3 text-secondary '>Select  Option</h1>
   <div class="card mb-3" style={{maxWidth: '540px'}}>
@@ -42,6 +58,7 @@ function ViewMovies() {
 </div>
   </>
     </div>
+</>
   )
 }
 

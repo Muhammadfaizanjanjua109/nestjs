@@ -52,7 +52,7 @@ function EnterMovies() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+    <div className="d-flex justify-content-center align-items-center" style={{minHeight:'calc(100vh - 70px)'}}>
       <div className="card p-4 w-50">
         <h3 className="text-center text-primary fw-bolder">Add Movie Record</h3>
         <div className="mt-4 mb-4">

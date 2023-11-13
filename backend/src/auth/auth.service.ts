@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException  ,BadRequestException, ConflictException} from '@nestjs/common';
+import { Injectable, UnauthorizedException  ,BadRequestException, ConflictException, NotFoundException} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -49,7 +49,7 @@ export class AuthService {
 
 
   async signup(signUpDto ,file) {
-    debugger
+    
     const isUsernameTaken = await this.isUsernameTaken(signUpDto.username);
 
     if (isUsernameTaken) {
@@ -84,34 +84,96 @@ export class AuthService {
   }
 
 
-  async updateProfile(jwtToken: string, updateData: Partial<Auth>, file: MulterFile) {
-    let b= await  this.jwtService.verify(jwtToken)
-    // console.log(b,'b  b b b b')
-    let userId =b.id
-    // console.log(userId,'body')
-    const user = await this.AuthModal.findById(userId);
-// console.log(user, 'user')
-    if (!user) {
-      throw new UnauthorizedException('Unauthorized', 'User not found');
-    }
 
-    if (file) {
-      user.image = updateData.image;
-    }
 
-    if (updateData.username) {
-      user.username = updateData.username;
-    }
-    if (updateData.dob) {
-      user.dob = updateData.dob;
-    }
+  async getUserFromToken(jwtToken: string): Promise<Auth> {
+    try {
+      const decodedToken = this.jwtService.verify(jwtToken);
+      const userId = decodedToken.id;
 
-    if (updateData.address) {
-      user.address = updateData.address;
+      const user = await this.AuthModal.findById(userId).exec();
+
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Invalid token');
     }
-
-    await user.save(); 
-
-    return { user, message: 'User profile updated successfully' };
   }
+
+
+
+
+
+
+
+
+
+  
+  async updateProfile(jwtToken: string, updateData: Partial<Auth>, file: any): Promise<any> {
+    const decodedToken = this.jwtService.verify(jwtToken);
+      const userId = decodedToken.id;
+
+    try {
+  
+      const user = await this.AuthModal.findById(userId);
+  
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+  
+      // Update the user fields based on the provided data
+      if (updateData.username) {
+        if(updateData.username !=user.username){
+          const isUsernameTaken = await this.isUsernameTaken(updateData.username);
+          if (isUsernameTaken) {
+            throw new ConflictException('Username already exists');
+          }
+          
+        }
+        user.username = updateData.username;
+      }
+
+
+
+
+
+
+      if (updateData.password) {
+        const hashedPassword = await bcrypt.hash(updateData.password, 10);
+        user.password = hashedPassword;
+      }
+
+
+
+
+
+  
+      if (updateData.address) {
+        user.address = updateData.address;
+      }
+      if (updateData.dob) {
+        user.dob = updateData.dob;
+      }
+
+  
+     
+      if (file) {
+        // Process the image file
+        user.image = file.path;
+      }
+  console.log(user , 'user')
+      // Save the updated user to the database
+      await user.save();
+  
+      return { message: 'User profile updated successfully' };
+    } catch (error) {
+      // Handle errors
+      console.log('Error updating user profile:', error);
+      throw new BadRequestException('Failed to update user profile', error.message);
+    }
+  }
+  
 }

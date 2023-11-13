@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 // import Sidebar from "./Sidebar";
 import { Outlet } from "react-router-dom";
+import Navbar from "./Navbar";
 // import useIdleTimer from "../../Common/customHooks/useIdleTimerHook";
 // import Loader from "../../Common/Loader";
 // import JiraIssueCollector from "../../Common/IssueCollector";
@@ -26,7 +27,7 @@ function Layout() {
    
        
         <div className="col main-Content">
-          
+          <Navbar />
           <Suspense fallback={<p>Loading....</p>}>
        
 

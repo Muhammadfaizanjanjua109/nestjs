@@ -63,7 +63,7 @@ export class RatingsService {
   
       if (userRatings.length === 0) {
         // If the user has not rated any movies, recommend movies with the most stars (highest average rating)
-        const topRatedMovies = await this.moviesModel
+        const recommendedMovies = await this.moviesModel
           .aggregate([
             {
               $group: {
@@ -81,11 +81,7 @@ export class RatingsService {
           .exec();
   
         // Retrieve the full movie details based on the top-rated movies
-        const recommendedMovies = await this.moviesModel
-          .find({ _id: { $in: topRatedMovies.map((movie) => movie._id) } })
-          .exec();
-  
-        return recommendedMovies;
+        return this.moviesModel.find({ _id: { $in: recommendedMovies.map((movie) => movie._id) } }).exec();
       } else {
         // If the user has rated movies, recommend movies based on their ratings
         // Sort user ratings in descending order
@@ -98,25 +94,21 @@ export class RatingsService {
           .exec();
   
         // Find movies based on user's preferred category
-        const userCategories = await this.authModel
-          .findById(userId)
-          .select('category')
-          .exec();
-  
-        const recommendedMoviesByCategory = await this.moviesModel
-          .find({ category: { $in: userCategories.category } })
-          .limit(3) // Recommend only 3 movies based on category
-          .exec();
+        const userCategories = await this.authModel.findById(userId).select('category').exec();
   
         // Merge the recommendations based on rating and category
         const mergedRecommendations = [
           ...recommendedMoviesByRating,
-          ...recommendedMoviesByCategory,
+          ...(await this.moviesModel
+            .find({ category: { $in: userCategories.category } })
+            .limit(3) // Recommend only 3 movies based on category
+            .exec()),
         ];
   
         // Remove duplicates from the merged recommendations
-        const uniqueRecommendations = Array.from(new Set(mergedRecommendations.map((movie) => movie._id)))
-          .map((id) => mergedRecommendations.find((movie) => movie._id === id));
+        const uniqueRecommendations = Array.from(
+          new Set(mergedRecommendations.map((movie) => movie._id))
+        ).map((id) => mergedRecommendations.find((movie) => movie._id === id));
   
         return uniqueRecommendations;
       }
@@ -125,6 +117,7 @@ export class RatingsService {
       throw new Error('Unable to get user ratings');
     }
   }
+  
   
   
 

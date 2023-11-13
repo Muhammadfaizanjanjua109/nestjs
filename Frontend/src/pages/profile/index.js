@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+
+
+
+
+
+import React, { useState  ,useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
-function SignUp() {
+function ProfilePage() {
   const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
+
+
+
+
+
 
   const [form, setForm] = useState({
     username: '',
@@ -14,8 +25,9 @@ function SignUp() {
     category:'',
   });
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
 
+ 
+ 
   const [file, setFile] = useState(null);
   const [error, setError] = useState('');
 
@@ -31,68 +43,99 @@ function SignUp() {
     }
   };
 
-  const handleCategoryChange = (e) => {
-    setSelectedCategories(Array.from(e.target.selectedOptions, (option) => option.value));
-  };
-
-  const validateInputs = () => {
-    if (
-      !form.username.trim() ||
-      !form.address.trim() ||
-      !form.password.trim() ||
-      !form.password.trim() ||
-      !file
-    ) {
-      setError('Please fill in all fields and select at least one category and upload a profile image');
-      return false;
-    }
-    setError('');
-    return true;
-  };
 
 
 
 
+useEffect(()=>{
+    GetAllUserData()
+},[])
+
+const GetAllUserData=()=>{
+    const token = window.localStorage.getItem("token");
+    const apiUrl = `${process.env.REACT_APP_BASE_URL}auth/user` ; 
+    const customHeaders = {
+        'Authorization': `Bearer ${token}`, 
+      };
+// Make the GET request
+axios
+  .get(apiUrl , {
+    headers: customHeaders,
+  })
+  .then((response) => {
+    // Handle the success response
+debugger
+    setForm({
+        username: response?.data?.username,
+        address: response?.data?.address,
+        // password: response?.data?.password,
+        profileImage: response?.data?.image,
+        category:response?.data?.category,
+      })
+    
+    
+
+  
+    console.log('Data received:', response.data);
+  })
+  .catch((error) => {
+    // Handle errors
+    console.error('Error fetching data:', error);
+  });
+}
 
 
 
-  const handleSignUpAPI = () => {
+
+
+
+
+
+
+const handleUpdateAPI = () => {
     try {
-      if (!validateInputs()) {
-        return;
-      }
-
-      const apiUrl = `${REACT_APP_BASE_URL}auth/signup`;
+      const token = window.localStorage.getItem('token');
+      const customHeaders = {
+        'Authorization': `Bearer ${token}`, 
+      };
+  
+      const apiUrl = `${REACT_APP_BASE_URL}auth/update_profile`;
       const formData = new FormData();
       formData.append('username', form.username);
       formData.append('address', form.address);
-      formData.append('password', form.password);
+    {form.password !='' && formData.append('password', form.password); }  
       formData.append('image', file);
       formData.append('category', form.category);
-
-      axios.post(apiUrl, formData)
+  
+      axios.patch(apiUrl, formData, { headers: customHeaders }) // Include headers in the request
         .then((response) => {
-          console.log('User created successfully:', response.data);
-          navigate('/');
+          toast.success('User record updated successfully');
+          GetAllUserData();
+          console.log('User updated successfully:', response.data);
         })
         .catch((error) => {
-          console.error('Error creating user:', error);
+          console.error('Error updating user:', error);
           setError(error.response?.data?.message || 'An error occurred');
         });
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('Error updating user:', error);
       setError('An unexpected error occurred');
     }
   };
- 
+  
+  const handleImageClick = () => {
+    document.getElementById('profileImageInput').click();
+  };
 
   return (
     <>
-      <div className='mt-4 mb-4'>
+   <div className=' container p-4 d-flex justify-content-center align-items-center flex-column'>
+   <div className='mt-4 mb-4 card p-4'>
         <div className='mb-2'>
         <label>Username:</label>
           <input
             className='form-control'
+            value={form.username}
             onChange={(e) => handleChange(e)}
             name='username'
             placeholder='Enter Username'
@@ -105,12 +148,10 @@ function SignUp() {
             className='form-control'
             onChange={(e) => handleChange(e)}
             name='address'
+            value={form.address}
             placeholder='Enter Address'
           />
         </div>
-
-
-
 
         <div className="mb-2">
             <label htmlFor="category">Category</label>
@@ -132,13 +173,6 @@ function SignUp() {
             </select>
           </div>
 
-
-
-
-
-
-
-
         <div className='mb-2'>
         <label>Password:</label>
           <input
@@ -146,19 +180,29 @@ function SignUp() {
             onChange={(e) => handleChange(e)}
             name='password'
             type='password'
+            
+            autocomplete="off"
+            value={form.password}
             placeholder='Enter Password'
           />
         </div>
 
-
-        <div className='mb-2'>
+        <div className='mb-2' onClick={()=>handleImageClick()} style={{ cursor: 'pointer' }}>
         <label>Profile Image:</label>
+
+        {file ==null &&  <img
+          src={`${REACT_APP_BASE_URL}${form.profileImage}`} // Use the URL of the uploaded image
+          alt='Profile'
+          className='form-control' // You can adjust the styling as needed
+        />}
+       
         <input
           type='file'
-          className='form-control'
-          accept="image/*"
+          id='profileImageInput'
+          accept='image/*'
           name='profileImage'
           onChange={(e) => handleChange(e)}
+          style={file ==null ? { display: 'none' } : {}} // Hide the file input
         />
       </div>
 
@@ -168,20 +212,15 @@ function SignUp() {
       <div className="container-login100-form-btn">
         <div className="wrap-login100-form-btn">
           <div className="login100-form-bgbtn"></div>
-          <button className="login100-form-btn" onClick={() => handleSignUpAPI()}>
-            Sign Up
+          <button className="login100-form-btn" onClick={() => handleUpdateAPI()}>
+          Update Information
           </button>
         </div>
       </div>
-
-      <div className="text-center p-t-115">
-        <span className="txt1">Already have an account?</span>
-        <Link className="txt2" to="/">
-          Sign In
-        </Link>
-      </div>
+   </div>
+    
     </>
   );
 }
 
-export default SignUp;
+export default ProfilePage;

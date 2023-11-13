@@ -140,7 +140,7 @@ debugger
           <h5> IDMRating :{data.IDMRating}</h5>
           <span className='badge badge-primary text-light'> {data.category}</span>
           <RatingComponent rating={rating} setRating={setRating}  onRatingChange={handleRatingChange} />
-          <p>User Rating: {rating}</p>
+          <p>User Rating:  {parseInt(rating) }</p>
         </div>
 
 

@@ -47,7 +47,7 @@ function Login() {
                 window.localStorage.setItem("token", response.data.access_token);
                 navigate('/movies')
                 ;}).catch((error)=>{
-                    debugger
+                    
                     if (error.response) {
                     
                         toast.error(error.response?.data?.error || 'An error occurred');
