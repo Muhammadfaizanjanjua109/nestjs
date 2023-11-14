@@ -50,68 +50,119 @@ export class RatingsService {
   
 
 
+  // async getUserRatings(jwtToken: string): Promise<Movies[]> {
+  //   try {
+  //     const decodedToken = await this.jwtService.verify(jwtToken);
+  //     const userId = decodedToken.id;
+  
+  //     // Find all movies rated by the user
+  //     const userRatings = await this.ratingModel
+  //       .find({ user: userId })
+  //       .select('movie value')
+  //       .exec();
+  
+  //     if (userRatings.length === 0) {
+  //       // If the user has not rated any movies, recommend movies with the most stars (highest average rating)
+  //       const recommendedMovies = await this.moviesModel
+  //         .aggregate([
+  //           {
+  //             $group: {
+  //               _id: '$movie',
+  //               averageRating: { $avg: '$value' },
+  //             },
+  //           },
+  //           {
+  //             $sort: { averageRating: -1 },
+  //           },
+  //           {
+  //             $limit: 3, // Recommend only 3 movies
+  //           },
+  //         ])
+  //         .exec();
+  
+  //       // Retrieve the full movie details based on the top-rated movies
+  //       return this.moviesModel.find({ _id: { $in: recommendedMovies.map((movie) => movie._id) } }).exec();
+  //     } else {
+  //       // If the user has rated movies, recommend movies based on their ratings
+  //       // Sort user ratings in descending order
+  //       userRatings.sort((a, b) => b.value - a.value);
+  
+  //       // Recommend up to 3 movies based on the user's highest-rated movies
+  //       const recommendedMoviesByRating = await this.moviesModel
+  //         .find({ _id: { $in: userRatings.map((rating) => rating.movie) } })
+  //         .limit(3) // Recommend only 3 movies based on rating
+  //         .exec();
+  
+  //       // Find movies based on user's preferred category
+  //       const userCategories = await this.authModel.findById(userId).select('category').exec();
+  
+  //       // Merge the recommendations based on rating and category
+  //       const mergedRecommendations = [
+  //         ...recommendedMoviesByRating,
+  //         ...(await this.moviesModel
+  //           .find({ category: { $in: userCategories.category } })
+  //           .limit(3) // Recommend only 3 movies based on category
+  //           .exec()),
+  //       ];
+  
+  //       // Remove duplicates from the merged recommendations
+  //       const uniqueRecommendations = Array.from(
+  //         new Set(mergedRecommendations.map((movie) => movie._id))
+  //       ).map((id) => mergedRecommendations.find((movie) => movie._id === id));
+  
+  //       return uniqueRecommendations;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error getting user ratings:', error);
+  //     throw new Error('Unable to get user ratings');
+  //   }
+  // }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   async getUserRatings(jwtToken: string): Promise<Movies[]> {
     try {
       const decodedToken = await this.jwtService.verify(jwtToken);
       const userId = decodedToken.id;
   
-      // Find all movies rated by the user
-      const userRatings = await this.ratingModel
-        .find({ user: userId })
-        .select('movie value')
-        .exec();
-  
-      if (userRatings.length === 0) {
-        // If the user has not rated any movies, recommend movies with the most stars (highest average rating)
-        const recommendedMovies = await this.moviesModel
-          .aggregate([
-            {
-              $group: {
-                _id: '$movie',
-                averageRating: { $avg: '$value' },
-              },
-            },
-            {
-              $sort: { averageRating: -1 },
-            },
-            {
-              $limit: 3, // Recommend only 3 movies
-            },
-          ])
-          .exec();
-  
-        // Retrieve the full movie details based on the top-rated movies
-        return this.moviesModel.find({ _id: { $in: recommendedMovies.map((movie) => movie._id) } }).exec();
-      } else {
-        // If the user has rated movies, recommend movies based on their ratings
-        // Sort user ratings in descending order
-        userRatings.sort((a, b) => b.value - a.value);
-  
-        // Recommend up to 3 movies based on the user's highest-rated movies
-        const recommendedMoviesByRating = await this.moviesModel
-          .find({ _id: { $in: userRatings.map((rating) => rating.movie) } })
-          .limit(3) // Recommend only 3 movies based on rating
-          .exec();
-  
         // Find movies based on user's preferred category
         const userCategories = await this.authModel.findById(userId).select('category').exec();
-  
-        // Merge the recommendations based on rating and category
-        const mergedRecommendations = [
-          ...recommendedMoviesByRating,
-          ...(await this.moviesModel
-            .find({ category: { $in: userCategories.category } })
-            .limit(3) // Recommend only 3 movies based on category
-            .exec()),
-        ];
-  
-        // Remove duplicates from the merged recommendations
-        const uniqueRecommendations = Array.from(
-          new Set(mergedRecommendations.map((movie) => movie._id))
-        ).map((id) => mergedRecommendations.find((movie) => movie._id === id));
-  
-        return uniqueRecommendations;
-      }
+     let movies=   await this.moviesModel
+              .find({ category: { $in: userCategories.category } })
+              .limit(3)  // Recommend only 3 movies based on category
+              .exec()
+        return movies;
+      
     } catch (error) {
       console.error('Error getting user ratings:', error);
       throw new Error('Unable to get user ratings');
@@ -119,6 +170,23 @@ export class RatingsService {
   }
   
   
+  // try {
+  //   const decodedToken = await this.jwtService.verify(jwtToken);
+  //   const userId = decodedToken.id;
+
+  
+
+    //  // Find movies based on user's preferred category
+    //  const userCategories = await this.authModel.findById(userId).select('category').exec();
+  
+    //  // Merge the recommendations based on rating and category
+    //  const mergedRecommendations = [
+    //    ...recommendedMoviesByRating,
+    //    ...(await this.moviesModel
+    //      .find({ category: { $in: userCategories.category } })
+    //      .limit(3) // Recommend only 3 movies based on category
+    //      .exec()),
+    //  ];
   
 
 

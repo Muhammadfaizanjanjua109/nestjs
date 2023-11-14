@@ -148,6 +148,12 @@ export class AuthService {
 
 
 
+      if (updateData.category) {
+        user.category =  updateData.category;
+      }
+
+
+
 
 
   
