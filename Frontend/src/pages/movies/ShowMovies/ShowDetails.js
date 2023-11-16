@@ -148,24 +148,44 @@ debugger
 
       <hr />
       <div className='container'>
-        <h5 className='mt-5 text-primary fw-bold mb-4'>Recommended Movies For You</h5>
-        <div className='row'>
-          {moviesList.map((index) => {
-            return (<>
 
-              <div className='col-lg-3 col-md-4 col-sm-12 mb-3'>
-                <div className="card " style={{ width: '18rem' }}>
-                  <div className="card-body">
-                    <h5 className="card-title">{index.name}</h5>
-                    <h6 className="card-subtitle mb-2 text-muted">{index.category}</h6>
-                    <p className="card-text">{truncateString(index.description, 100)}</p>
-                    {/* <button className='btn btn-primary' onClick={()=>handleDetailButtonClick(index)}>View More</button> */}
-                    {/* <a href="#" className="card-link">Another link</a> */}
-                  </div>
-                </div>
-              </div></>)
-          })}
-        </div>
+
+
+
+
+
+
+
+
+      <h5 className='mt-5 text-primary fw-bold mb-4'>Recommended Movies For You</h5>
+      <div className='row'>
+        {moviesList.map((index) => (
+          <div key={index._id} className='col-lg-3 col-md-4 col-sm-12 mb-3'>
+            <div className="card" style={{ width: '18rem' }}>
+              <div className="card-body">
+                <h5 className="card-title">{index.name}</h5>
+                <h6 className="card-subtitle mb-2 text-muted">{index.category}</h6>
+                <p className="card-text">{truncateString(index.description, 100)}</p>
+                <RatingComponent
+                  rating={index.rating} // Pass the rating from your moviesList
+                  justView={true} // Set justView to true to make it view-only
+                />
+                {/* Additional buttons or links */}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+
+
+
+
+
+
+
+
+
       </div>
     </div>
   )

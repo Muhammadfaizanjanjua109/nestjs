@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import './RatingComponent.css'; // Import a CSS file for styling
 
-function RatingComponent({ onRatingChange ,setRating   ,rating}) {
+function RatingComponent({ onRatingChange ,setRating   ,rating ,justView=false}) {
 
 
   const handleRatingChange = (newRating) => {
@@ -17,7 +17,7 @@ function RatingComponent({ onRatingChange ,setRating   ,rating}) {
           <span
             key={star}
             className={star <= rating ? 'star selected' : 'star'}
-            onClick={() => handleRatingChange(star)}
+            onClick=  {!justView ?  () => handleRatingChange(star) : null}
           >
             ★
           </span>

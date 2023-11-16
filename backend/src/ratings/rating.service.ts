@@ -150,25 +150,90 @@ export class RatingsService {
 
 
 
-  async getUserRatings(jwtToken: string): Promise<Movies[]> {
+  // async getUserRatings(jwtToken: string): Promise<Movies[]> {
+  //   try {
+  //     const decodedToken = await this.jwtService.verify(jwtToken);
+  //     const userId = decodedToken.id;
+  
+  //       // Find movies based on user's preferred category
+  //       const userCategories = await this.authModel.findById(userId).select('category').exec();
+  //    let movies=   await this.moviesModel
+  //             .find({ category: { $in: userCategories.category } })
+  //             .limit(3)  // Recommend only 3 movies based on category
+  //             .exec()
+  //       return movies;
+      
+  //   } catch (error) {
+  //     console.error('Error getting user ratings:', error);
+  //     throw new Error('Unable to get user ratings');
+  //   }
+  // }
+  
+
+
+
+  async getUserRatings(jwtToken: string) {
     try {
       const decodedToken = await this.jwtService.verify(jwtToken);
       const userId = decodedToken.id;
   
-        // Find movies based on user's preferred category
-        const userCategories = await this.authModel.findById(userId).select('category').exec();
-     let movies=   await this.moviesModel
-              .find({ category: { $in: userCategories.category } })
-              .limit(3)  // Recommend only 3 movies based on category
-              .exec()
-        return movies;
-      
+
+    // Find user's preferred category
+    const userCategories = await this.authModel.findById(userId).select('category').exec();
+    const userCategory = userCategories.category;
+
+    console.log('User Categories:', userCategory);
+
+    // Fetch movies based on the user's preferred category
+    const movies = await this.moviesModel.find({ category: userCategory }).limit(3).exec();
+
+    console.log('Fetched Movies:', movies);
+
+    // Extract movie IDs for ratings query
+    const movieIds = movies.map(movie => movie._id);
+
+    console.log('Movie IDs:', movieIds);
+
+    // Retrieve ratings for the fetched movies
+    const ratings = await this.ratingModel.find({ movie: { $in: movieIds } }).exec();
+
+    console.log('Fetched Ratings:', ratings);
+
+    // Create a new array to hold movies with rating values
+    const moviesWithRating: any = movies.map(movie => {
+      const rating = ratings.find(rating => rating.movie.toString() === movie._id.toString());
+      return {
+        _id: movie._id,
+        name: movie.name,
+        description: movie.description,
+        rating: rating ? rating.value : null,
+        category: movie.category,
+        __v: movie.__v
+      };
+    });
+
+    return moviesWithRating
+
+
     } catch (error) {
       console.error('Error getting user ratings:', error);
       throw new Error('Unable to get user ratings');
     }
   }
   
+  
+
+
+
+
+
+
+
+
+
+
+
+
   
   // try {
   //   const decodedToken = await this.jwtService.verify(jwtToken);
